@@ -67,16 +67,7 @@ app.use(
 //! Routes
 app.use("/", require("./routes/index.js"));
 
-//! Welcome Route
-app.get("/", (req, res) => {
-  res.send(`
-    <center>
-        <h1>Welcome to Test Project!</h1>
-        <br>
-        <a href="https://github.com/swiftrut/SchedulX-backend.git" target="_blank" > SchedulX-backend </a>
-    </center>
-  `);
-});
+
 
 //! Error Handler Middleware
 app.use(errorHandler);
