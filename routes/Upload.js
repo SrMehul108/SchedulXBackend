@@ -27,6 +27,19 @@ const upload = multer({
   limits: { fileSize: 10 * 1024 * 1024 }, //? 10MB
 });
 
+// Multer local storage configuration (add file validation here)
+const uploadLocal = multer({
+  dest: 'uploads/', // Local storage directory
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit for local uploads
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+    if (!allowedTypes.includes(file.mimetype)) {
+      return cb(new Error("Invalid file type. Only images are allowed."), false);
+    }
+    cb(null, true); // Accept the file
+  },
+});
+
 router.post("/img-upload", authMiddleware, upload.single("image"), ImgUpload);
 
 router.post("/local-upload", authMiddleware, uploadLocal.single('image'), ImgUpload);
@@ -35,15 +48,18 @@ router.post('/img-download', async (req, res) => {
   try {
     const { public_id } = req.body;
 
+    if (!public_id) {
+      return res.status(400).send('Public ID is required');
+    }
+
     // Construct the Cloudinary image URL
     const imageUrl = `https://res.cloudinary.com/${process.env.CLOUDNAME}/image/upload/${public_id}`;
-
     const fileName = imageUrl.split('/').pop();
-    console.log(fileName);
     const localPath = path.join('uploads', `${fileName}.jpg`);
 
     const writer = createWriteStream(localPath);
 
+    // Download the image from Cloudinary and save it locally
     axios({
       method: 'get',
       url: imageUrl,
@@ -56,7 +72,7 @@ router.post('/img-download', async (req, res) => {
       });
     }).catch(error => {
       console.error(error);
-      res.status(500).send('Error downloading image');
+      res.status(500).send('Error downloading image from Cloudinary');
     });
   } catch (error) {
     console.error(error);
