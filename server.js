@@ -43,7 +43,7 @@ app.use(
   helmet.contentSecurityPolicy({
     directives: {
       defaultSrc: ["'self'"], //? Allow resources from the same origin
-      imgSrc: ["'self'", "https://schedulx-backend.onrender.com", "http://localhost:5173"],  // Allow images from backend
+      imgSrc: ["'self'", "http://schedulx-backend.onrender.com", "http://localhost:5173"],  // Allow images from backend
     },
   })
 );
@@ -52,7 +52,7 @@ app.use(
 
 //! Enable CORS (Cross-Origin Resource Sharing)
 app.use(cors({
-  origin: [process.env.FRONTEND_URL],
+  origin: "*",
   credentials: true,
 }));
 
