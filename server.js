@@ -42,17 +42,21 @@ app.use(passport.session());
 app.use(
   helmet.contentSecurityPolicy({
     directives: {
-      defaultSrc: ["'self'"], //? Allow resources from the same origin
-      imgSrc: ["'self'", "http://schedulxbackend.onrender.com", "http://localhost:5173"],  // Allow images from backend
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "http://localhost:5173"],
+      connectSrc: ["'self'", "http://schedulxbackend.onrender.com", "http://localhost:5173"],
+      imgSrc: ["'self'", "http://schedulxbackend.onrender.com", "http://localhost:5173"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
     },
   })
 );
+
 
 // app.use(morgan("dev")); //? For Api hit to send Log 
 
 //! Enable CORS (Cross-Origin Resource Sharing)
 app.use(cors({
-  origin: "*",
+  origin: ["http://localhost:5173", "http://schedulxbackend.onrender.com"],
   credentials: true,
 }));
 
